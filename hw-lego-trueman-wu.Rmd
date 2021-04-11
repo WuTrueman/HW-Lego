@@ -51,5 +51,81 @@ lego_sales %>%
   head(1)
 ```
 
+### Exercise 4.
 
+```{r}
+lego_sales <- lego_sales %>%
+  mutate(age_group = case_when(age <= 18 ~ "18 and under", age <= 25 & age >= 19 ~ "19 - 25", age <= 35 & age >= 26 ~ "26 - 35", age <= 50 & age >= 36 ~ "36 - 50", age >= 51 ~ "51 and over"))
+
+lego_sales
+```
+
+### Exercise 5.
+
+In this sample, the age group that purchase the highest number of Lego sets is 36 - 50.
+
+```{r}
+# each row may represent more than one set, depend on quantity
+
+lego_sales %>% 
+  group_by(age_group) %>%
+  summarise(number_purchased = sum(quantity)) %>%
+  arrange(desc(number_purchased))
+```
+
+### Exercise 6.
+
+In this sample, the age group that spend the most money on Legos is 36 - 50.
+
+```{r}
+# us_price is price per set
+# rows with same set_id with different quantity have the same us_price
+# thus, money spend should be us_price * quantity
+
+lego_sales %>% 
+  group_by(age_group) %>%
+  summarise(money_spent = sum(us_price * quantity)) %>%
+  arrange(desc(money_spent))
+```
+
+### Exercise 7.
+
+In this sample, the Lego theme that make the most money for Lego is Star Wars.
+
+```{r}
+lego_sales %>% 
+  group_by(theme) %>%
+  summarise(money_made = sum(us_price * quantity)) %>%
+  arrange(desc(money_made))
+```
+
+### Exercise 8.
+
+In this sample, most money are spent by people who don't leave their phone number; the known area code that spend the most money on Legos is 956.
+
+```{r}
+lego_sales %>% 
+  mutate(area_code = str_sub(phone_number, 1, 3)) %>%
+  group_by(area_code) %>%
+  summarise(money_spent = sum(us_price * quantity)) %>%
+  arrange(desc(money_spent))
+```
+
+### Exercise 9.
+
+What is the most common sub theme within each theme?
+
+Note that not all theme have a sub theme, not all lego set belong to a sub theme, and some themes have two equally common sub themes.
+
+```{r}
+theme_subtheme <- lego_sales %>% 
+  count(theme, subtheme) %>%
+  arrange(theme, desc(n))
+
+theme_subtheme %>%
+  group_by(theme) %>%
+  summarise(n = max(n)) %>%
+  merge(theme_subtheme) %>%
+  select(theme, subtheme, n)
+```
 
