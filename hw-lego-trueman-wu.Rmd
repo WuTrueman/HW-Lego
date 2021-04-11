@@ -3,9 +3,53 @@ title: "hw-lego-trueman-wu"
 output: html_notebook
 ---
 
+```{r}
+library(tidyverse)
+library(dsbox)
+```
 
-Test Commit 2
+```{r}
+lego_sales
+```
 
-Test Commit 3
+### Exercise 1.
 
-Test Commit 4
+In this sample, the first three common names of purchasers are Jackson, Jacob, and Joseph.
+
+```{r}
+lego_sales %>% 
+  count(first_name) %>%
+  arrange(desc(n)) %>%
+  head(3)
+```
+
+### Exercise 2.
+
+In this sample, the three most common themes of Lego sets purchased are Star Wars, Nexo Knights, and Gear.
+
+```{r}
+lego_sales %>% 
+  count(theme) %>%
+  arrange(desc(n)) %>%
+  head(3)
+```
+
+### Exercise 3.
+
+In this sample, the most common theme of Lego sets purchased is Star Wars. The most common sub-theme of Star Wars is The Force Awakens.
+
+```{r}
+most_common_theme <-lego_sales %>% 
+  count(theme) %>%
+  arrange(desc(n)) %>%
+  head(1)[[1]]
+
+lego_sales %>%
+  filter(theme == most_common_theme) %>%
+  count(subtheme) %>%
+  arrange(desc(n)) %>%
+  head(1)
+```
+
+
+
